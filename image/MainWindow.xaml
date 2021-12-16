@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:image="clr-namespace:image"
         mc:Ignorable="d"
-        Title="MainWindow" Height="470" Width="450">
-
+        Title="MainWindow" Height="500" Width="450">
+    <Window.DataContext>
+        <image:MainViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="15"/>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
-        
         <Grid.RowDefinitions>
-            <RowDefinition Height="120*"/>
+            <RowDefinition Height="150*"/>
             <RowDefinition Height="70*"/>
             <RowDefinition Height="70*"/>
             <RowDefinition Height="70*"/>
@@ -29,20 +30,26 @@
             <ColumnDefinition Width="150*"/>
             <ColumnDefinition Width="150*"/>
         </Grid.ColumnDefinitions>
-        <Image Margin="15" Source="/Resources/load.png" x:Name="img1"/>
-        <Image Margin="15" Grid.Column="1" Source="/Resources/load.png" x:Name="img2"/>
-        <Image Margin="15" Grid.Column="2" Source="/Resources/load.png" x:Name="img3"/>
-        <TextBox Grid.Row="1" Margin="15" Height="30" x:Name="tb1"/>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="15" Height="30" x:Name="tb2"/>
-        <TextBox Grid.Row="1" Grid.Column="2" Margin="15" Height="30" x:Name="tb3"/>
-        <Button Grid.Row="2" Content="Start" Click="OnButtonSubmitClick"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="Start" Click="OnButtonSubmitClick1"/>
-        <Button Grid.Row="2" Grid.Column="2" Content="Start" Click="OnButtonSubmitClick2"/>
-        <Button Grid.Row="3" Content="Stop"/>
-        <Button Grid.Row="3" Grid.Column="1" Content="Stop"/>
-        <Button Grid.Row="3" Grid.Column="2" Content="Stop"/>
-        <Button Grid.Row="4" Grid.Column="1" Content="All Start" Click="OnButtonSubmitClick3"/>
+        <Image Margin="15" Source="{Binding Img1.Source}"/>
+        <Image Margin="15" Grid.Column="1" Source="{Binding Img2.Source}"/>
+        <Image Margin="15" Grid.Column="2" Source="{Binding Img3.Source}"/>
+        <TextBox Grid.Row="1" Margin="15" Height="30"
+                 Text="{Binding Tb1}"/>
+        
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="15" Height="30"
+                 Text="{Binding Tb2}"/>
+        
+        <TextBox Grid.Row="1" Grid.Column="2" Margin="15" Height="30"
+                 Text="{Binding Tb3}"/>
+
+        <Button Grid.Row="2" Content="Start" Command="{Binding AddCommand}"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="Start" Command="{Binding AddCommand1}"/>
+        <Button Grid.Row="2" Grid.Column="2" Content="Start" Command="{Binding AddCommand2}"/>
+        <Button Grid.Row="3" Content="Stop" Command="{Binding AddCommand3}"/>
+        <Button Grid.Row="3" Grid.Column="1" Content="Stop" Command="{Binding AddCommand3}"/>
+        <Button Grid.Row="3" Grid.Column="2" Content="Stop" Command="{Binding AddCommand3}"/>
+        <Button Grid.Row="4" Grid.Column="1" Content="All Start"/>
         <ProgressBar Grid.Row="5" Grid.ColumnSpan="3" Height="30" Margin="15"
-                     x:Name="barProgress" Minimum="0" Maximum="100"/>
+                     Value="{Binding BarProgress}" Minimum="0" Maximum="100"/>
     </Grid>
 </Window>
