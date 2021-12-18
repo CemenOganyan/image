@@ -15,9 +15,9 @@ namespace image.ViewModel
     public class MainViewModel : AbstractMainViewModel
     {
         #region WebClaents
-        WebClient web = new WebClient();
-        WebClient web1 = new WebClient();
-        WebClient web2 = new WebClient();
+        private readonly WebClient web = new();
+        private readonly WebClient web1 = new();
+        private readonly WebClient web2 = new();
         #endregion
         #region Переменные без привязки
         int ClickButton, IntermediateBarProgress, IntermediateBarProgress1, IntermediateBarProgress2;
@@ -96,19 +96,38 @@ namespace image.ViewModel
         async private void DownloadImage(string url)
         {
             web.DownloadProgressChanged += OnDownloadProgressChanged;
-            try { await web.DownloadFileTaskAsync(new Uri(url), "output1.jpg"); Img1 = Tb1; }
-            catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; } 
+            try
+            {
+                string file = Path.GetTempFileName();
+                await web.DownloadFileTaskAsync(new Uri(url), file);
+                Img1 = new(new(file));
+            }
+            catch
+            {
+                if (ClickButton == 0) MessageBox.Show("Неправильный url");
+                else ClickButton = 0;
+            }
         }
         async private void DownloadImage1(string url)
         {
             web1.DownloadProgressChanged += OnDownloadProgressChanged1;
-            try { await web1.DownloadFileTaskAsync(new Uri(url), "output2.jpg"); Img2 = Tb2; }
+            try
+            {
+                string file = Path.GetTempFileName();
+                await web.DownloadFileTaskAsync(new Uri(url), file);
+                Img2 = new(new(file));
+            }
             catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; }
         }
         async private void DownloadImage2(string url)
         {
             web2.DownloadProgressChanged += OnDownloadProgressChanged2;
-            try { await web2.DownloadFileTaskAsync(new Uri(url), "output3.jpg"); Img3 = Tb3; }
+            try
+            {
+                string file = Path.GetTempFileName();
+                await web.DownloadFileTaskAsync(new Uri(url), file);
+                Img3 = new(new(file));
+            }
             catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; }
         }
         #endregion

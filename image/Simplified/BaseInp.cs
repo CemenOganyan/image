@@ -1,17 +1,17 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace image.ViewModel
+namespace Simplified
 {
     public abstract class BaseInp : INotifyPropertyChanged
     {
         /// <inheritdoc cref="INotifyPropertyChanged"/>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>Защищённый метод для создания события <see cref="PropertyChanged"/>.</summary>
         /// <param name="propertyName">Имя изменившегося свойства. 
         /// Если значение не задано, то используется имя метода в котором был вызов.</param>
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        protected void RaisePropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -30,7 +30,7 @@ namespace image.ViewModel
         /// метода <see cref="RaisePropertyChanged(string)"/>
         /// с передачей ему параметра <paramref name="propertyName"/>.<br/>
         /// После создания события вызывается метод <see cref="OnPropertyChanged(string, object, object)"/>.</remarks>
-        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string propertyName = null)
+        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string? propertyName = null)
         {
             if (!object.Equals(propertyFiled, newValue))
             {
@@ -51,6 +51,6 @@ namespace image.ViewModel
         /// реакции на изменение значения свойства.<br/>
         /// Рекомендуется в переопределённом методе первым оператором вызывать базовый метод.<br/>
         /// Если в переопределённом методе не будет вызова базового, то возможно нежелательное изменение логики базового класса.</remarks>
-        protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
+        protected virtual void OnPropertyChanged(string? propertyName, object? oldValue, object? newValue) { }
     }
 }
