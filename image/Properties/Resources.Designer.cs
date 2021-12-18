@@ -63,19 +63,9 @@ namespace image.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Byte[].
         /// </summary>
-        internal static byte[] Load {
+        internal static byte[] fone {
             get {
-                object obj = ResourceManager.GetObject("Load", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Поиск локализованного ресурса типа System.Byte[].
-        /// </summary>
-        internal static byte[] Loading {
-            get {
-                object obj = ResourceManager.GetObject("Loading", resourceCulture);
+                object obj = ResourceManager.GetObject("fone", resourceCulture);
                 return ((byte[])(obj));
             }
         }

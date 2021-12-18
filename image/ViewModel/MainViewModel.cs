@@ -1,98 +1,113 @@
-﻿using image.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
-namespace image
+namespace image.ViewModel
 {
-    internal class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel : AbstractMainViewModel
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "") { PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop)); }
-        protected void Set<T>(ref T propertyFiled, T newValue, [CallerMemberName] string propertyName = null)
-        {
-            if (!object.Equals(propertyFiled, newValue))
-            {
-                T oldValue = propertyFiled;
-                propertyFiled = newValue;
-                OnPropertyChanged(propertyName);
-
-                OnPropertyChanged(propertyName, oldValue, newValue);
-            }
-        }
-        protected virtual void OnPropertyChanged(string propertyName, object oldValue, object newValue) { }
-        Image _img1 = new Image();
-        Image _img2 = new Image();
-        Image _img3 = new Image();
-        public Image Img1 { get => _img1; set => Set(ref _img1, value); }
-        public Image Img2 { get => _img2; set => Set(ref _img2, value); }
-        public Image Img3 { get => _img3; set => Set(ref _img3, value); }
-
-        string _tb1;
-        string _tb2;
-        string _tb3;
-        public string Tb1 { get => _tb1; set => Set(ref _tb1, value); }
-        public string Tb2 { get => _tb2; set => Set(ref _tb2, value); }
-        public string Tb3 { get => _tb3; set => Set(ref _tb3, value); }
-        int _barProgress;
-        public int BarProgress { get => _barProgress; set => Set(ref _barProgress, value); }
-
+        #region WebClaents
         WebClient web = new WebClient();
         WebClient web1 = new WebClient();
         WebClient web2 = new WebClient();
-        int choice = 0;
-        private Command addCommand;
-        public Command AddCommand { get { return addCommand ?? (addCommand = new Command(obj => { DownloadImage(String.Copy(_tb1), "output.jpg"); choice = 1; })); } }
-        private Command addCommand1;
-        public Command AddCommand1 { get { return addCommand1 ?? (addCommand1 = new Command(obj => { DownloadImage(String.Copy(_tb2), "output1.jpg"); choice = 2; })); } }
-
-        private Command addCommand2;
-        public Command AddCommand2 { get { return addCommand2 ?? (addCommand2 = new Command(obj => { DownloadImage(String.Copy(_tb3), "output2.jpg"); choice = 3; })); } }
-
-        private Command addCommand3;
-        public Command AddCommand3 { get { return addCommand3 ?? (addCommand3= new Command(obj => { web.CancelAsync(); _barProgress = 0; })); } }
-        private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e) { _barProgress = e.ProgressPercentage; }
-        private void DownloadImage(string url, string fileName)
+        #endregion
+        #region Переменные без привязки
+        int ClickButton, IntermediateBarProgress, IntermediateBarProgress1, IntermediateBarProgress2;
+        #endregion
+        #region Команды
+        protected override void StartExecute()
         {
-            switch (choice)
-            {
-                case 1:
-                    Task.Factory.StartNew(() => { web.DownloadFileCompleted += OnDownloadFileCompleted; web.DownloadProgressChanged += OnDownloadProgressChanged;
-                        web.DownloadFileAsync(new Uri(url), fileName); });
-                    break;
-                case 2:
-                    Task.Factory.StartNew(() => { web1.DownloadFileCompleted += OnDownloadFileCompleted; web1.DownloadProgressChanged += OnDownloadProgressChanged;
-                        web1.DownloadFileAsync(new Uri(url), fileName); });
-                    break;
-                case 3:
-                    Task.Factory.StartNew(() => { web2.DownloadFileCompleted += OnDownloadFileCompleted; web2.DownloadProgressChanged += OnDownloadProgressChanged;
-                        web2.DownloadFileAsync(new Uri(url), fileName); });
-                    break;
-            }
+            DownloadImage(Tb1);
         }
-        async private void OnDownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        protected override void StartExecute1()
         {
-            var projectName = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            switch (choice)
-            {
-                case 1:
-                    await Task.Factory.StartNew(() => { var imagePath = projectName + "\\output.jpg"; _img1.Source = new BitmapImage(new Uri(imagePath)); });
-                    break;
-                case 2:
-                    await Task.Factory.StartNew(() => { var imagePath1 = projectName + "\\output1.jpg"; _img2.Source = new BitmapImage(new Uri(imagePath1)); }); 
-                    break;
-                case 3:
-                    await Task.Factory.StartNew(() => { var imagePath2 = projectName + "\\output2.jpg"; _img3.Source = new BitmapImage(new Uri(imagePath2)); });
-                    break;
-            }
-        } 
+            DownloadImage1(Tb2);
+        }
+        protected override void StartExecute2()
+        {
+            DownloadImage2(Tb3);
+        }
+        protected override void StartAllExecute()
+        {
+            StartExecute();
+            StartExecute1();
+            StartExecute2();
+        }
+        protected override void StopExecute()
+        {
+            ClickButton = 1;
+            web.CancelAsync();
+        }
+        protected override void StopExecute1()
+        {
+            ClickButton = 1;
+            web1.CancelAsync();
+        }
+        protected override void StopExecute2()
+        {
+            ClickButton = 1;
+            web2.CancelAsync();
+        }
+        #endregion
+        #region объединение трех progressBar в один общий
+        private void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            IntermediateBarProgress = e.ProgressPercentage;
+            BarProgress = IntermediateBarProgress + IntermediateBarProgress1 + IntermediateBarProgress2;
+            #region условия для общего progressBar
+            if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
+            else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
+            else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            #endregion
+        }
+        private void OnDownloadProgressChanged1(object sender, DownloadProgressChangedEventArgs e)
+        {
+            IntermediateBarProgress1 = e.ProgressPercentage;
+            BarProgress = IntermediateBarProgress + IntermediateBarProgress1 + IntermediateBarProgress2;
+            #region условия для общего progressBar
+            if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
+            else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
+            else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            #endregion
+        }
+        private void OnDownloadProgressChanged2(object sender, DownloadProgressChangedEventArgs e)
+        {
+            IntermediateBarProgress2 = e.ProgressPercentage;
+            BarProgress = IntermediateBarProgress + IntermediateBarProgress1 + IntermediateBarProgress2;
+            #region условия для общего progressBar
+            if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
+            else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
+            else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            #endregion
+        }
+        #endregion
+        #region Загрузка картинок
+        async private void DownloadImage(string url)
+        {
+            web.DownloadProgressChanged += OnDownloadProgressChanged;
+            try { await web.DownloadFileTaskAsync(new Uri(url), "output1.jpg"); Img1 = Tb1; }
+            catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; } 
+        }
+        async private void DownloadImage1(string url)
+        {
+            web1.DownloadProgressChanged += OnDownloadProgressChanged1;
+            try { await web1.DownloadFileTaskAsync(new Uri(url), "output2.jpg"); Img2 = Tb2; }
+            catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; }
+        }
+        async private void DownloadImage2(string url)
+        {
+            web2.DownloadProgressChanged += OnDownloadProgressChanged2;
+            try { await web2.DownloadFileTaskAsync(new Uri(url), "output3.jpg"); Img3 = Tb3; }
+            catch { if (ClickButton == 0) MessageBox.Show("Неправильный url"); else ClickButton = 0; }
+        }
+        #endregion
     }
 }

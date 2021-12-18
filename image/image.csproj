@@ -8,16 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\Load.png" />
-    <None Remove="Resources\Loading.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\Load.png" />
-    <Resource Include="Resources\Loading.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

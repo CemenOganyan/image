@@ -3,16 +3,42 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:image="clr-namespace:image"
+        xmlns:vm="clr-namespace:image.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="500" Width="450">
+
+    <Window.Background>
+        <ImageBrush ImageSource="/Resources/fone.jpg"/>
+    </Window.Background>
     <Window.DataContext>
-        <image:MainViewModel/>
+        <vm:MainViewModel/>
     </Window.DataContext>
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="15"/>
+            <Setter Property="TextElement.FontFamily"
+                            Value="Fonts/#Segoe UI"/>
+
+            <Setter Property="Background" Value="#42454D"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver"
+                                 Value="True">
+
+                    <Setter Property="Background"
+                                    Value="#9399A6"/>
+
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#42454D"/>
+            <Setter Property="Foreground" Value="AliceBlue"/>
+            <Setter Property="Margin" Value="15"/>
+            <Setter Property="Height" Value="30"/>
         </Style>
     </Window.Resources>
 
@@ -30,26 +56,72 @@
             <ColumnDefinition Width="150*"/>
             <ColumnDefinition Width="150*"/>
         </Grid.ColumnDefinitions>
-        <Image Margin="15" Source="{Binding Img1.Source}"/>
-        <Image Margin="15" Grid.Column="1" Source="{Binding Img2.Source}"/>
-        <Image Margin="15" Grid.Column="2" Source="{Binding Img3.Source}"/>
-        <TextBox Grid.Row="1" Margin="15" Height="30"
-                 Text="{Binding Tb1}"/>
         
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="15" Height="30"
-                 Text="{Binding Tb2}"/>
+        <Image Margin="15" Source="{Binding Img1}"/>
+        <Image Margin="15" Grid.Column="1" Source="{Binding Img2}"/>
+        <Image Margin="15" Grid.Column="2" Source="{Binding Img3}"/>
         
-        <TextBox Grid.Row="1" Grid.Column="2" Margin="15" Height="30"
-                 Text="{Binding Tb3}"/>
+        <TextBlock IsHitTestVisible="False" FontSize="18" Text="Ввод url" Foreground="AliceBlue"
+                   Grid.Row="1" Panel.ZIndex="1" VerticalAlignment="Center" HorizontalAlignment="Center">
 
-        <Button Grid.Row="2" Content="Start" Command="{Binding AddCommand}"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="Start" Command="{Binding AddCommand1}"/>
-        <Button Grid.Row="2" Grid.Column="2" Content="Start" Command="{Binding AddCommand2}"/>
-        <Button Grid.Row="3" Content="Stop" Command="{Binding AddCommand3}"/>
-        <Button Grid.Row="3" Grid.Column="1" Content="Stop" Command="{Binding AddCommand3}"/>
-        <Button Grid.Row="3" Grid.Column="2" Content="Stop" Command="{Binding AddCommand3}"/>
-        <Button Grid.Row="4" Grid.Column="1" Content="All Start"/>
-        <ProgressBar Grid.Row="5" Grid.ColumnSpan="3" Height="30" Margin="15"
-                     Value="{Binding BarProgress}" Minimum="0" Maximum="100"/>
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text, ElementName=tBox1}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock IsHitTestVisible="False" FontSize="18" Text="Ввод url" Foreground="AliceBlue"
+                   Grid.Row="1" Grid.Column="1" Panel.ZIndex="1" 
+                   VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text, ElementName=tBox2}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        <TextBlock IsHitTestVisible="False" FontSize="18" Text="Ввод url" Foreground="AliceBlue"
+                   Grid.Row="1" Grid.Column="2" Panel.ZIndex="1" 
+                   VerticalAlignment="Center" HorizontalAlignment="Center">
+
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text, ElementName=tBox3}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <TextBox Grid.Row="1" Text="{Binding Tb1, UpdateSourceTrigger=PropertyChanged}"
+                 x:Name="tBox1"/>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="tBox2"
+                 Text="{Binding Tb2, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Grid.Row="1" Grid.Column="2" x:Name="tBox3"
+                 Text="{Binding Tb3, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Button Grid.Row="2" Content="Start" Command="{Binding StartCommand}"/>
+        <Button Grid.Row="2" Grid.Column="1" Content="Start" Command="{Binding StartCommand1}"/>
+        <Button Grid.Row="2" Grid.Column="2" Content="Start" Command="{Binding StartCommand2}"/>
+        <Button Grid.Row="3" Content="Stop" Command="{Binding StopCommand}"/>
+        <Button Grid.Row="3" Grid.Column="1" Content="Stop" Command="{Binding StopCommand}"/>
+        <Button Grid.Row="3" Grid.Column="2" Content="Stop" Command="{Binding StopCommand}"/>
+        <Button Grid.Row="4" Grid.Column="1" Content="All Start" Command="{Binding StartCommandAll}"/>
+        
+        <ProgressBar Grid.Row="5" Grid.ColumnSpan="3" Height="30" Margin="15" 
+                     Value="{Binding BarProgress}" Minimum="0" Maximum="{Binding BarMaxVall}"/>
     </Grid>
 </Window>
