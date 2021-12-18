@@ -66,6 +66,7 @@ namespace image.ViewModel
             if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
             else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
             else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            IntermediateBarProgress = 0;
             #endregion
         }
         private void OnDownloadProgressChanged1(object sender, DownloadProgressChangedEventArgs e)
@@ -76,6 +77,7 @@ namespace image.ViewModel
             if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
             else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
             else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            IntermediateBarProgress1 = 0;
             #endregion
         }
         private void OnDownloadProgressChanged2(object sender, DownloadProgressChangedEventArgs e)
@@ -86,6 +88,7 @@ namespace image.ViewModel
             if (IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0) BarMaxVall = 300;
             else if ((IntermediateBarProgress > 0 && IntermediateBarProgress1 > 0) || (IntermediateBarProgress > 0 && IntermediateBarProgress2 > 0) || (IntermediateBarProgress1 > 0 && IntermediateBarProgress2 > 0)) BarMaxVall = 200;
             else if (IntermediateBarProgress > 0 || IntermediateBarProgress1 > 0 || IntermediateBarProgress2 > 0) BarMaxVall = 100;
+            IntermediateBarProgress2 = 0;
             #endregion
         }
         #endregion
